@@ -2,43 +2,44 @@ from database_manager import DatabaseManager
 
 
 def test_database_manager():
-    # Создаем экземпляр менеджера базы данных
-    db_manager = DatabaseManager("database.db")  # Используем базу данных в памяти для тестирования
+    # Create an instance of the database manager
+    db_manager = DatabaseManager(":memory:")  # Use in-memory database for testing
     db_manager.create_tables()
 
-    # Вставляем сотрудников
+    # Insert employees
     db_manager.insert_employee("John Doe", "HR", "123-456-7890")
     db_manager.insert_employee("Jane Smith", "IT", "987-654-3210")
 
-    # Вставляем документы
+    # Insert documents
     db_manager.insert_document("DOC001", "Employee Handbook", 10)
     db_manager.insert_document("DOC002", "IT Security Policy", 5)
 
-    # Связываем сотрудников с документами
+    # Link employees to documents
     db_manager.link_employee_to_document("John Doe", "DOC001", 1)
     db_manager.link_employee_to_document("Jane Smith", "DOC002", 2)
 
-    # Тестируем получение всех сотрудников
+    # Test getting all employees
     employees = db_manager.get_all_employees()
     assert sorted(employees) == sorted(["John Doe", "Jane Smith"])
 
-    # Тестируем получение всех документов
+    # Test getting all documents
     documents = db_manager.get_all_documents()
     assert sorted(documents) == sorted(["DOC001", "DOC002"])
 
-    # Тестируем получение сотрудников, связанных с документом
+    # Test getting employees linked to a document
     employees_by_document = db_manager.get_employees_by_document("DOC001")
     assert sorted(employees_by_document) == sorted(["John Doe"])
 
-    # Тестируем получение документов, связанных с сотрудником
+    # Test getting documents linked to an employee
     documents_by_employee = db_manager.get_documents_by_employee("John Doe")
     assert sorted(documents_by_employee) == sorted(["DOC001"])
 
-    # Закрываем базу данных
+    # Close the database
     db_manager.close()
 
-    print("Все тесты пройдены успешно!")
+    print("All tests passed successfully!")
 
 
-# Запускаем тесты
-test_database_manager()
+if __name__ == "__main__":
+    # Run tests
+    test_database_manager()
