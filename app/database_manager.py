@@ -85,6 +85,18 @@ class DatabaseManager:
             self.cursor.execute("INSERT INTO Employees_Documents (employee_name, document_designation) VALUES (?, ?)", (employee_name, document_designation))
             self.connection.commit()
 
+    def get_all_documents(self) -> List[str]:
+        """Retrieve all document designations from the Documents table."""
+        self.cursor.execute("SELECT document_designation FROM Documents")
+        documents = [row[0] for row in self.cursor.fetchall()]
+        return documents
+
+    def get_all_employees(self) -> List[str]:
+        """Retrieve all employee names from the Employees table."""
+        self.cursor.execute("SELECT employee_name FROM Employees")
+        employees = [row[0] for row in self.cursor.fetchall()]
+        return employees
+
     def get_employees_by_document(self, document_designation: str) -> List[str]:
         """Get all employees linked to the specified document."""
         self.cursor.execute("SELECT employee_name FROM Employees_Documents WHERE document_designation = ?", (document_designation,))
