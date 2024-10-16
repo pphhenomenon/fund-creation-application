@@ -87,7 +87,17 @@ class DatabaseManager:
                 VALUES (?, ?, ?)
             """
             self.cursor.execute(query, (employee_name, document_designation, document_instance_number))
-            self.connection.commit()
+        else:
+            # Update document_instance_number if it differs
+            if result[0] != document_instance_number:
+                print(f"Updating instance number for employee {employee_name} and document {document_designation}.")
+                self.cursor.execute("""
+                    UPDATE Employees_Documents 
+                    SET document_instance_number = ? 
+                    WHERE employee_name = ? AND document_designation = ?
+                """, (document_instance_number, employee_name, document_designation))
+            
+        self.connection.commit()
 
     def get_all_documents(self) -> List[str]:
         """Retrieve all document designations from the Documents table."""

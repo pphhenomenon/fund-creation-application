@@ -20,19 +20,19 @@ def test_database_manager():
 
     # Тестируем получение всех сотрудников
     employees = db_manager.get_all_employees()
-    assert sorted(employees) == sorted(["John Doe", "Jane Smith"]), f"Ошибка: {employees}"
+    assert sorted(employees) == sorted(["John Doe", "Jane Smith"])
 
     # Тестируем получение всех документов
     documents = db_manager.get_all_documents()
-    assert sorted(documents) == sorted(["DOC001", "DOC002"]), f"Ошибка: {documents}"
+    assert sorted(documents) == sorted(["DOC001", "DOC002"])
 
     # Тестируем получение сотрудников, связанных с документом
-    employees_by_doc1 = db_manager.get_employees_by_document("DOC001")
-    assert sorted(employees_by_doc1) == sorted(["John Doe"]), f"Ошибка: {employees_by_doc1}"
+    employees_by_document = db_manager.get_employees_by_document("DOC001")
+    assert sorted(employees_by_document) == sorted(["John Doe"])
 
     # Тестируем получение документов, связанных с сотрудником
-    documents_by_emp1 = db_manager.get_documents_by_employee("John Doe")
-    assert sorted(documents_by_emp1) == sorted(["DOC001"]), f"Ошибка: {documents_by_emp1}"
+    documents_by_employee = db_manager.get_documents_by_employee("John Doe")
+    assert sorted(documents_by_employee) == sorted(["DOC001"])
 
     # Закрываем базу данных
     db_manager.close()

@@ -1,6 +1,6 @@
 import sys
-import os
 import shutil
+
 from PyQt6.QtWidgets import (
     QApplication,
     QMainWindow,
@@ -12,10 +12,9 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QComboBox,
     QFileDialog,
-    QMenuBar,
 )
 from PyQt6.QtGui import QAction
-from PyQt6.QtCore import Qt
+
 from database_manager import DatabaseManager
 
 
