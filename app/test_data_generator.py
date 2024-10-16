@@ -18,7 +18,7 @@ def generate_test_data(db: DatabaseManager, employee_count: int = 40, document_c
 
     # Insert employees
     for i in range(1, employee_count + 1):
-        employee_name: str = f"Employee {i}"
+        employee_name: str = f"Employee {i:03}"
         document_instance_number: int = random.randint(1, 10)
         department: str = random.choice(departments)
         contact_phone: str = generate_phone_number()
