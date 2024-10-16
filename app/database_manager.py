@@ -14,9 +14,8 @@ class DatabaseManager:
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Employees (
                 employee_name TEXT PRIMARY KEY NOT NULL,
-                document_instance_number INTEGER,
-                department TEXT,
-                contact_phone TEXT
+                department TEXT NOT NULL,
+                contact_phone TEXT NOT NULL
             )
         """)
 
@@ -32,8 +31,9 @@ class DatabaseManager:
         # Create Employees_Documents table for many-to-many relationship
         self.cursor.execute("""
             CREATE TABLE IF NOT EXISTS Employees_Documents (
-                employee_name TEXT,
-                document_designation TEXT,
+                employee_name TEXT NOT NULL,
+                document_designation TEXT NOT NULL,
+                document_instance_number INTEGER NOT NULL,
                 FOREIGN KEY (employee_name) REFERENCES Employees(employee_name),
                 FOREIGN KEY (document_designation) REFERENCES Documents(document_designation),
                 PRIMARY KEY (employee_name, document_designation)
@@ -42,7 +42,7 @@ class DatabaseManager:
 
         self.connection.commit()
 
-    def insert_employee(self, employee_name: str, document_instance_number: int, department: str, contact_phone: str) -> None:
+    def insert_employee(self, employee_name: str, department: str, contact_phone: str) -> None:
         """Insert a new employee or skip if the employee already exists."""
         # Check if employee already exists in the Employees table
         self.cursor.execute("SELECT 1 FROM Employees WHERE employee_name = ?", (employee_name,))
@@ -53,9 +53,9 @@ class DatabaseManager:
         else:
             # Insert new employee into Employees table
             self.cursor.execute("""
-                INSERT INTO Employees (employee_name, document_instance_number, department, contact_phone)
-                VALUES (?, ?, ?, ?)
-            """, (employee_name, document_instance_number, department, contact_phone))
+                INSERT INTO Employees (employee_name, department, contact_phone)
+                VALUES (?, ?, ?)
+            """, (employee_name, department, contact_phone))
             self.connection.commit()
 
     def insert_document(self, document_designation: str, document_name: str, document_quantity: int) -> None:
@@ -74,7 +74,7 @@ class DatabaseManager:
         else:
             print(f"Document with designation {document_designation} already exists. Skipping insertion.")
 
-    def link_employee_to_document(self, employee_name: str, document_designation: str) -> None:
+    def link_employee_to_document(self, employee_name: str, document_designation: str, document_instance_number: int) -> None:
         """Link an employee to a document in the Employees_Documents table."""
         # Check if the link between employee and document already exists
         self.cursor.execute("SELECT 1 FROM Employees_Documents WHERE employee_name = ? AND document_designation = ?", (employee_name, document_designation))
@@ -82,7 +82,11 @@ class DatabaseManager:
 
         if result is None:
             # Link employee to document in Employees_Documents table
-            self.cursor.execute("INSERT INTO Employees_Documents (employee_name, document_designation) VALUES (?, ?)", (employee_name, document_designation))
+            query = """
+                INSERT INTO Employees_Documents (employee_name, document_designation, document_instance_number)
+                VALUES (?, ?, ?)
+            """
+            self.cursor.execute(query, (employee_name, document_designation, document_instance_number))
             self.connection.commit()
 
     def get_all_documents(self) -> List[str]:
